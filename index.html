@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>坂本龙一 · 分享会 | Ryuichi Sakamoto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;700&family=Noto+Sans+SC:wght@200;300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg-soft: #121212;
+    --text: #e8e6e1;
+    --text-dim: #8a8780;
+    --text-faint: #4a4845;
+    --accent: #c9a96e;
+    --line: #1f1f1f;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶部导航 */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+    backdrop-filter: blur(4px);
+    transition: padding 0.3s;
+  }
+  nav.scrolled { padding: 16px 48px; background: rgba(10,10,10,0.95); }
+  nav .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+  nav ul { list-style: none; display: flex; gap: 40px; }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    transition: color 0.3s;
+  }
+  nav a:hover { color: var(--text); }
+
+  /* Hero 区 - 参考KAGAMI官网质感 */
+  .hero {
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: #050505 url('收藏到 Portrait.jpg') no-repeat center center / cover;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+  /* 暗色渐变蒙版 - 适配肖像照（主体居中，四周黑色） */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, rgba(5,5,5,0.2) 0%, rgba(5,5,5,0.55) 50%, rgba(5,5,5,0.85) 100%),
+      linear-gradient(to bottom, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.15) 40%, rgba(5,5,5,0.15) 60%, rgba(5,5,5,0.9) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* 噪点纹理叠层 */
+  .hero .grain {
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.5"/></svg>');
+    opacity: 0.08;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+  /* Hero 内容提到最上层 */
+  .hero > *:not(.grain) {
+    position: relative;
+    z-index: 3;
+  }
+  .hero .years {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    color: var(--text-faint);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1.5s 0.3s forwards;
+  }
+  .hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 200;
+    font-size: clamp(48px, 9vw, 120px);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1.5s 0.6s forwards;
+    text-shadow: 0 4px 40px rgba(0,0,0,0.8), 0 2px 12px rgba(0,0,0,0.6);
+  }
+  .hero .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(16px, 2vw, 22px);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    animation: fadeUp 1.5s 0.9s forwards;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.9);
+  }
+  .hero .quote {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 100%;
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 300;
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 2;
+    opacity: 0;
+    animation: fadeUp 1.5s 1.2s forwards;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.95);
+    padding: 0 24px;
+  }
+  .hero .scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--text-faint);
+    opacity: 0;
+    animation: scrollHintFade 1.5s 1.5s forwards;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+  }
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: var(--text-faint);
+    margin: 12px auto 0;
+    animation: scrollLine 2s infinite;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollHintFade {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    50.01% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* 通用 section */
+  section {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::before,
+  .section-label::after {
+    content: '';
+    height: 1px;
+    background: var(--line);
+    flex: 0 0 40px;
+  }
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 0.12em;
+    margin-bottom: 80px;
+    line-height: 1.2;
+  }
+  .section-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text-dim);
+    font-size: 0.5em;
+    display: block;
+    margin-top: 12px;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  /* 活动信息 */
+  .event-info {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 80px 48px;
+  }
+  .event-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 48px;
+  }
+  .event-item .label {
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+  }
+  .event-item .value {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .event-item .value small {
+    display: block;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* 生平时间线 - 左右交替高级布局 */
+  .timeline {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  /* 中轴竖线 - 渐变质感 */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      var(--line) 8%,
+      var(--line) 92%,
+      transparent 100%);
+    transform: translateX(-50%);
+  }
+  .timeline-item {
+    position: relative;
+    width: 50%;
+    padding: 0 56px 80px 0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .timeline-item:nth-child(even) {
+    margin-left: 50%;
+    padding: 0 0 80px 56px;
+  }
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* 节点连接横线 - 已移除 */
+  /* 节点圆点 - 固定在中轴上 */
+  .timeline-item::after {
+    content: '';
+    position: absolute;
+    top: 11px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    transition: all 0.4s;
+  }
+  /* 左侧节点：圆点在右边缘（即中轴） */
+  .timeline-item:not(:nth-child(even))::after {
+    right: -3.5px;
+  }
+  /* 右侧节点：圆点在左边缘（即中轴） */
+  .timeline-item:nth-child(even)::after {
+    left: -3.5px;
+  }
+  .timeline-item.visible::after {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(200,170,130,0.15);
+  }
+  /* 年份 - 大号衬线作为视觉焦点 */
+  .timeline-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    color: var(--accent);
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    opacity: 0.85;
+  }
+  /* 标题 */
+  .timeline-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  /* 标题左侧装饰短横线 */
+  .timeline-title::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--text-dim);
+    vertical-align: middle;
+    margin-right: 14px;
+    margin-bottom: 4px;
+  }
+  /* 描述文字 */
+  .timeline-desc {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 2;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+  /* 音乐播放器容器 */
+  .timeline-player-wrap {
+    margin-top: 28px;
+  }
+  .timeline-player-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .timeline-player-label::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .timeline-player {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--bg-soft);
+    transition: border-color 0.4s;
+  }
+  .timeline-player:hover {
+    border-color: var(--accent);
+  }
+  .timeline-player iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* 响应式 - 小屏幕改为单侧布局 */
+  @media (max-width: 768px) {
+    .timeline::before {
+      left: 20px;
+      transform: none;
+    }
+    .timeline-item,
+    .timeline-item:nth-child(even) {
+      width: 100%;
+      margin-left: 0;
+      padding: 0 0 60px 56px;
+    }
+    .timeline-item::before {
+      left: 20px;
+      right: auto;
+      width: 24px;
+    }
+    /* 小屏幕时所有圆点都在左侧中轴上 */
+    .timeline-item:not(:nth-child(even))::after,
+    .timeline-item:nth-child(even)::after {
+      left: 16.5px;
+      right: auto;
+    }
+    .timeline-year {
+      font-size: 40px;
+    }
+  }
+
+  /* 音乐试听 */
+  .music-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+  }
+  .music-card {
+    background: var(--bg-soft);
+    padding: 32px;
+    border: 1px solid var(--line);
+    transition: border-color 0.4s;
+  }
+  .music-card:hover { border-color: var(--accent); }
+  .music-card .track-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+  .music-card .track-info {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  .music-card .video-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .music-card .video-embed iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .music-card .track-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  /* 照片墙 */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s;
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.3) brightness(0.85);
+    transition: filter 0.4s;
+  }
+  .gallery-item:hover img { filter: grayscale(0) brightness(1); }
+  .gallery-item .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .gallery-item .ph-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+  .gallery-item .ph-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+  .gallery-item .fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+  }
+  .gallery-item .fallback::before {
+    content: '◐';
+    font-size: 32px;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+  }
+  .gallery-tip {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  /* 尾部 */
+  footer {
+    padding: 120px 48px 80px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+  footer .farewell {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 200;
+    font-size: clamp(24px, 4vw, 42px);
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  footer .farewell em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--accent);
+    display: block;
+    font-size: 0.7em;
+    margin-top: 16px;
+  }
+  footer .meta {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--text-faint);
+    line-height: 2;
+  }
+  footer .meta a {
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    transition: border-color 0.3s;
+  }
+  footer .meta a:hover { border-color: var(--accent); }
+
+  /* 响应式 */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    nav ul { gap: 20px; }
+    nav ul li:nth-child(n+4) { display: none; }
+    section { padding: 80px 24px; }
+    .event-info { padding: 60px 24px; }
+    .hero .quote { padding: 0 24px; bottom: 100px; }
+    footer { padding: 80px 24px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="logo">RYUICHI SAKAMOTO</div>
+  <ul>
+    <li><a href="#life">生平</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="grain"></div>
+  <h1>坂本龍一</h1>
+  <div class="subtitle">Ryuichi Sakamoto</div>
+  <div class="years">1952 — 2023</div>
+  <div class="scroll-hint">SCROLL</div>
+</section>
+
+<!-- 生平时间线 -->
+<section id="life">
+  <div class="section-label">LIFE / 生平</div>
+  <div class="section-title">一生<em>A Life in Music</em></div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">1952 — 1970</div>
+      <div class="timeline-title">出生与启蒙</div>
+      <div class="timeline-desc">1952年1月17日生于东京中野区。父亲坂本一龟是河出书房的编辑，曾负责三岛由纪夫等作家的作品出版；母亲是一位帽子设计师，家里常年流淌着古典音乐的唱片声。3岁开始学钢琴，10岁师从东京艺术大学松本民之助教授学习作曲——这位老师是日本战后作曲教育的重要人物。初中时，他深深迷恋披头士和德彪西，曾经一度以为自己是德彪西转世，甚至偷偷给自己取了"德彪西"的昵称。高中时，他被约翰·凯奇的先锋音乐和戈达尔的电影震撼，常常逃课泡在新宿的爵士咖啡馆里听 Live。1970年，他背着父亲偷偷报考了东京艺术大学作曲系并被录取，后深入研究民族音乐学——这段学术训练，为他日后打通古典、电子、世界音乐埋下了伏笔。</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">1978</div>
+      <div class="timeline-title">YMO 结成 · "教授"诞生</div>
+      <div class="timeline-desc">2月先参与细野晴臣专辑《Paraiso》录音，这次合作埋下了YMO的种子。10月发行个人首张专辑《Thousand Knives》正式出道——这是日本第一张使用 Roland MC-8 微处理器编程的专辑。11月，与细野晴臣、高桥幸宏正式组建 Yellow Magic Orchestra（YMO），把日本电子乐一举推向世界舞台。第二张专辑《SOLID STATE SURVIVOR》一夜爆红，其中《Behind the Mask》后来被 Michael Jackson 翻唱。坂本被高桥幸宏戏称为"教授"——因为他学识渊博，总爱讲一堆理论，这个昵称跟随了他一生。1979—1980 年 YMO 两次世界巡演，归国后在武道馆开唱，盛况空前。但 YMO 火遍全球后，他因厌恶被认出、被追捧，曾在家整整宅了10个月不出门——这种"既渴望创作又抗拒被消费"的矛盾，贯穿了他的一生。</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">1983</div>
+      <div class="timeline-title">《战场上的快乐圣诞》</div>
+      <div class="timeline-desc">YMO 解散。大岛渚导演邀请他出演电影《战场上的快乐 Christmas》——和大卫·鲍伊、北野武同台。接到大岛渚电话时，他脱口而出的不是"好"，而是"配乐也请让我来做"。这首主题曲《Merry Christmas Mr. Lawrence》后来成了传世经典，获第37届英国电影学院奖最佳配乐奖——这是坂本龙一人生中第一个国际大奖。但有趣的是，他本人长期不喜欢这首"太高调"的曲子，每次演出被要求演奏时，他都带着复杂的情绪坐到钢琴前。一个创作者和他最广为人知作品之间的关系，往往就是这样别扭。</div>
+      <div class="timeline-player-wrap">
+        <div class="timeline-player-label">Merry Christmas Mr. Lawrence · 1983</div>
+        <div class="timeline-player">
+          <iframe src="https://player.bilibili.com/player.html?bvid=BV1Ym4y1z7xR&page=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">1987</div>
+      <div class="timeline-title">《末代皇帝》· 奥斯卡之夜</div>
+      <div class="timeline-desc">贝托鲁奇导演的《末代皇帝》找到了他。他在两周之内，完成了 45 首曲目——其中包括中国传统乐器、西方管弦乐和现代电子音色的融合，这种跨界美学在当时前所未有。电影一举拿下奥斯卡最佳原创配乐奖、金球奖、格莱美奖，坂本龙一成为首位获得奥斯卡作曲奖的日本人，从此真正走向世界舞台。1990 年移居纽约，开始更广泛的跨界创作；1991 年凭《遮蔽的天空》再获金球奖最佳配乐；1992 年为巴塞罗那奥运会开幕式谱曲并亲自指挥；1999 年《Energy Flow》在日本销量破百万——一首器乐单曲，卖出百万销量，这在日本乐坛是奇迹。从东京的电子乐少年，到站在奥斯卡领奖台上的世界级作曲家，他用了不到十年。</div>
+      <div class="timeline-player-wrap">
+        <div class="timeline-player-label">The Last Emperor Theme · 1987</div>
+        <div class="timeline-player">
+          <iframe src="https://player.bilibili.com/player.html?bvid=BV1ay4y1q7Gr&page=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">2011</div>
+      <div class="timeline-title">311地震 · "大自然的调音"</div>
+      <div class="timeline-desc">2011年3月11日，东日本大地震与福岛核事故撼动了整个日本。坂本龙一第一时间深入宫城县避难所，在一所中学的体育馆里为灾民演奏《Merry Christmas Mr. Lawrence》——台下是失去家园的人，他坐在钢琴前反复说"不好意思，在这种时候还弹钢琴"。在陆前高田市的一所废校里，他发现一架被海啸浸泡过、琴键扭曲、音律全失的钢琴——他轻轻按下一个键，听到的不是标准的A音，而是一种被海水重新"调"过的、混沌却奇异的共鸣。他称这是"大自然的调音"，并长期保存这件乐器，把它视为时代留下的声音档案。同年发起"School Music Revival"项目，为灾区学校捐赠数百台乐器。2014年与东北管弦乐团团长大友直人共同创立"东北青少年管弦乐团"（TYO），亲任音乐指导，每年亲自飞回日本指导受灾儿童排练——他说："这些孩子失去的东西，我无法用音乐还给他们。但我希望音乐能成为他们生命中陪伴的力量。"他厌恶"音乐的力量"这种说法，曾公开表示："抱着治愈别人这些虚妄想法去做音乐，是非常愚昧丢人的事情。音乐做不到那种事，它只是声音而已——但声音有时恰好在那样的时刻，会被需要它的人听见。"</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">2014 — 2017</div>
+      <div class="timeline-title">与癌共生 · 《async》</div>
+      <div class="timeline-desc">2014年7月，坂本龙一在纽约纪念斯隆-凯特琳癌症中心确诊三期口咽癌。这是他人生中第一次被迫按下"暂停键"——他公开宣布暂停一切音乐活动，专心接受放射治疗与抗癌药物治疗。治疗过程极其痛苦：因放疗可能损伤声带，他选择了不手术；但放疗让他的唾液分泌量降至正常人的七成，长期吞咽困难，只能吃流食；每天早晨要吞下近十种药物，用细牙刷反复刷牙。他在病房里一度以为，自己再也写不出音乐了。康复后，他重新审视了"什么是音乐"这个根本问题。2015年，他应亚利桑德罗·冈萨雷斯·伊纳里图导演之邀，为莱昂纳多主演的《荒野猎人》配乐——这是他病愈后的首部重要作品，以弦乐的持续低音和自然采样的混合，塑造出冰原的窒息感，并获金球奖提名。2017年发行晚期代表作《async》。这张专辑彻底抛弃了传统旋律与节拍——里面有雨打在废旧水桶上的声音、有钢琴内部琴弦被物件介入后的微音、有合成器与自然采样的交织。他提出"不协调的声音共存"理念，并质问："所谓'协调'，是不是只是人类一厢情愿的偏见？大自然从来不协调——风、雨、虫鸣，从来没有在同一个调上。"同年获第30届东京国际电影节武士奖；纪录片《坂本龙一：终曲》（Ryuichi Sakamoto: Coda）上映，记录他与癌症共存的五年——影片末尾，他在一架被海啸泡过的钢琴前坐下，弹下一个走音的键，笑了。</div>
+      <div class="timeline-player-wrap">
+        <div class="timeline-player-label">async · 2017</div>
+        <div class="timeline-player">
+          <iframe src="https://player.bilibili.com/player.html?bvid=BV1mx411S7vG&page=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">2020</div>
+      <div class="timeline-title">为武汉祈福 · "中国武汉制造"</div>
+      <div class="timeline-desc">2020年初，新冠疫情在武汉暴发，坂本龙一成为最早为中国观众公开送祝福的国际音乐家之一。2月，北京当代艺术基金会发布了他用钢琴演奏的《aqua》视频——这首曲子出自他1978年的专辑《Thousand Knives》。视频末尾，他用中文写下一段话："不能出门玩耍很难过吧，但既然现在不用去学校了，就在家尽情做好玩的事吧。不要只是玩游戏哦，用这些时间，去读很多书，听很多音乐。还有，要锻炼身体哦。"——这段话是写给当时被隔离在家的中国孩子的，他用最朴素的方式告诉孩子：哪怕困在房间里，时间也可以是有质感的。2月29日晚，UCCA 尤伦斯当代艺术中心联合快手发起"良樂"线上音乐会，坂本龙一在纽约工作室现场演出近30分钟。舞台上摆满了石头、金属片、合成器、琴弦，以及一面写着"中国武汉制造"字样的吊钹——他事后解释："武汉在制作吊钹方面是非常有名的，我有很多这样的乐器，并且经常会用在我的音乐里面。"演奏结束，他直视镜头，用中文缓缓说出四个字："大家，加油。"这场演出累计数百万人在线观看，在中文互联网引发巨大反响，被许多中国网友称为他的"山川异域，风月同天"。</div>
+      <div class="timeline-player-wrap">
+        <div class="timeline-player-label">Aqua · 为武汉祈福 · 2020</div>
+        <div class="timeline-player">
+          <iframe src="https://player.bilibili.com/player.html?bvid=BV1Wj411H7hp&page=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">2021 — 2022</div>
+      <div class="timeline-title">《12》· 最后的日记</div>
+      <div class="timeline-desc">2020年6月，坂本龙一在纽约的癌症中心复查时确诊直肠癌——这是继口咽癌后的第二种癌症。他先接受放疗与抗癌药物治疗，但几个月后癌细胞并未消失；同年12月在日本检查时，发现癌细胞已转移至肝脏和淋巴；2021年又发现转移至肺部。2021年1月，他在日本接受第一次大手术——切除直肠原发灶（涉及30厘米大肠）、肝脏两处转移灶及转移的淋巴结，原定12小时，最终耗时20小时。其后两年，他陆续接受了共6次手术，包括2021年10月和12月两次切除肺部转移肿瘤。他在《新潮》杂志连载文章《我还能看到多少次满月升起》中坦言："我开始接受自己即将死亡的事实。如果什么都不做，只剩半年的生命。"但与此同时，他依然坚持创作——他在纽约工作室里录下零散的灵感片段，有的只是一段合成器的回声、一段钢琴音阶的尝试、一段对雨声的采样。2023年1月17日，在他71岁生日当天，这些日常片段被整理成专辑《12》发行，每首曲目都用日期编号命名——它是一本用声音写成的疾病日记。2022年12月11日至12日，他预先录制的钢琴独奏音乐会《Ryuichi Sakamoto: Playing the Piano 2022》以线上滚动形式全球播放，他称之为"最后一次用这种形式演奏"。演出跨越其一生曲目——从《末代皇帝》到YMO，再到《Merry Christmas Mr. Lawrence》。90天后，2023年3月28日，他离开了人世。</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-year">2023.03.28</div>
+      <div class="timeline-title">逝去</div>
+      <div class="timeline-desc">2023年3月28日，坂本龙一因直肠癌晚期在东京病逝，享年71岁。噩耗直到4月2日才由事务所对外公布——遵照他生前意愿，葬礼已以私人形式举行。他在生命的最后日子里，仍为是枝裕和导演的电影《怪物》配乐——这是他人生中第一次也是唯一一次，在合同中明确写明"因健康原因，无法接受新委托"，只挑选了两首核心主题以"现有素材再使用"的方式完成最后的交付。2023年5月17日，《怪物》在戛纳电影节首映，是枝裕和以片尾字幕向坂本龙一致敬。坂本龙一一生留下80余张个人专辑、30余部电影配乐、以及多部交响作品与公共艺术项目——他生前常引用一句箴言："Ars longa, vita brevis. 艺术长存，生命短暂。"这句话源自古希腊医师希波克拉底，他年轻时读到，从此记了一辈子。</div>
+      <div class="timeline-player-wrap">
+        <div class="timeline-player-label">Monster OST · 怪物配乐 · 2023</div>
+        <div class="timeline-player">
+          <iframe src="https://player.bilibili.com/player.html?bvid=BV1FT4y1H7i7&page=1&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 尾部 -->
+<footer>
+  <div class="farewell">
+    Ars longa, vita brevis.<br>
+    艺术长存，生命短暂。
+    <em>Ryuichi Sakamoto · 1952 — 2023</em>
+  </div>
+  <div class="meta">
+    分享会 · 2026<br>
+    谨以此页致敬坂本龙一先生<br>
+    本页面仅作内部学习分享用途，所有图片/视频/音乐版权归原作者所有<br>
+    <a href="https://www.sitesakamoto.com" target="_blank">www.sitesakamoto.com</a>
+  </div>
+</footer>
+
+<script>
+  // 禁用浏览器自动恢复滚动位置，刷新后回到顶部
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  // 导航栏滚动效果
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }, { passive: true });
+
+  // 时间线滚动渐入动画 - 错时延迟
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    observer.observe(item);
+  });
+
+  // 视频懒加载：进入视口自动播放，离开视口自动暂停
+  // B站iframe不支持postMessage稳定控制，用reload方式
+  // 通过IntersectionObserver监测每个视频是否在视口
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const iframe = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+        // 进入视口：确保带autoplay=1参数
+        const url = new URL(iframe.src);
+        if (url.searchParams.get('autoplay') !== '1') {
+          url.searchParams.set('autoplay', '1');
+          url.searchParams.set('muted', '1'); // 浏览器策略：静音才允许自动播放
+          iframe.src = url.toString();
+        }
+      } else if (!entry.isIntersecting) {
+        // 离开视口：移除autoplay并reload（停止播放）
+        const url = new URL(iframe.src);
+        if (url.searchParams.get('autoplay') === '1') {
+          url.searchParams.set('autoplay', '0');
+          url.searchParams.delete('muted');
+          iframe.src = url.toString();
+        }
+      }
+    });
+  }, { threshold: [0, 0.6, 1] });
+
+  document.querySelectorAll('.timeline-player iframe').forEach(iframe => {
+    videoObserver.observe(iframe);
+  });
+</script>
+
+</body>
+</html>
