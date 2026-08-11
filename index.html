@@ -367,6 +367,26 @@
     font-weight: 300;
     letter-spacing: 0.02em;
   }
+  /* 童年照片双图 */
+  .childhood-photos {
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .childhood-photos img {
+    width: 50%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 4px;
+    filter: grayscale(100%);
+    opacity: 0.85;
+    transition: opacity 0.6s ease, filter 0.6s ease;
+    cursor: default;
+  }
+  .childhood-photos img:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+  }
   /* 音乐播放器容器 */
   .timeline-player-wrap {
     margin-top: 28px;
@@ -632,6 +652,10 @@
       <div class="timeline-year">1952 — 1970</div>
       <div class="timeline-title">出生与启蒙</div>
       <div class="timeline-desc">1952年1月17日生于东京中野区。父亲坂本一龟是河出书房的编辑，曾负责三岛由纪夫等作家的作品出版；母亲是一位帽子设计师，家里常年流淌着古典音乐的唱片声。3岁开始学钢琴，10岁师从东京艺术大学松本民之助教授学习作曲——这位老师是日本战后作曲教育的重要人物。初中时，他深深迷恋披头士和德彪西，曾经一度以为自己是德彪西转世，甚至偷偷给自己取了"德彪西"的昵称。高中时，他被约翰·凯奇的先锋音乐和戈达尔的电影震撼，常常逃课泡在新宿的爵士咖啡馆里听 Live。1970年，他背着父亲偷偷报考了东京艺术大学作曲系并被录取，后深入研究民族音乐学——这段学术训练，为他日后打通古典、电子、世界音乐埋下了伏笔。</div>
+      <div class="childhood-photos">
+        <img src="aede9bc5f5107f352e35c0814f826bb5.jpg" alt="童年坂本龙一·之一">
+        <img src="f1e22b5ac53fb5c16e51aaf0d68073b7.jpg" alt="童年坂本龙一·之二">
+      </div>
     </div>
 
     <div class="timeline-item">
