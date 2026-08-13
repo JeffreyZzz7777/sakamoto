@@ -787,31 +787,20 @@
     observer.observe(item);
   });
 
-  // 视频懒加载：进入视口自动播放，离开视口自动暂停
-  // B站iframe不支持postMessage稳定控制，用reload方式
-  // 通过IntersectionObserver监测每个视频是否在视口
+  // 视频：手动点击播放（有声音），离开视口自动暂停
   const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const iframe = entry.target;
-      if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-        // 进入视口：确保带autoplay=1参数
-        const url = new URL(iframe.src);
-        if (url.searchParams.get('autoplay') !== '1') {
-          url.searchParams.set('autoplay', '1');
-          url.searchParams.set('muted', '1'); // 浏览器策略：静音才允许自动播放
-          iframe.src = url.toString();
-        }
-      } else if (!entry.isIntersecting) {
-        // 离开视口：移除autoplay并reload（停止播放）
+      if (!entry.isIntersecting) {
+        // 离开视口：停止播放
         const url = new URL(iframe.src);
         if (url.searchParams.get('autoplay') === '1') {
           url.searchParams.set('autoplay', '0');
-          url.searchParams.delete('muted');
           iframe.src = url.toString();
         }
       }
     });
-  }, { threshold: [0, 0.6, 1] });
+  }, { threshold: [0] });
 
   document.querySelectorAll('.timeline-player iframe').forEach(iframe => {
     videoObserver.observe(iframe);
